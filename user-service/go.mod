@@ -1,4 +1,4 @@
-module 172.16.10.51:10080/sam/micro/user-service
+module github.com/samlina/microshop/user-service
 
 go 1.14
 

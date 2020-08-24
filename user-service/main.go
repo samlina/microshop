@@ -1,21 +1,20 @@
 package main
 
 import (
-	"github.com/micro/go-micro"
-	database "172.16.10.51:10080/sam/micro/user-service/db"
-	"172.16.10.51:10080/sam/micro/user-service/handler"
-	pb "172.16.10.51:10080/sam/micro/user-service/proto/user"
-	repository "172.16.10.51:10080/sam/micro/user-service/repo"
 	"fmt"
+	"github.com/micro/go-micro"
+	database "github.com/samlina/microshop/user-service/db"
+	"github.com/samlina/microshop/user-service/handler"
+	pb "github.com/samlina/microshop/user-service/proto/user"
+	repository "github.com/samlina/microshop/user-service/repo"
 	"log"
 )
 
 func main() {
 
+	db, err := database.CreateConnection()
 
-	db,err := database.CreateConnection()
-
-	if err != nil{
+	if err != nil {
 		log.Fatalf("Could not connect to DB: %v", err)
 	}
 
@@ -30,19 +29,17 @@ func main() {
 
 	//以下是micro创建微服务流程
 	srv := micro.NewService(
-			micro.Name("micro.user.service"),
-			micro.Version("latest"),  //新增接口版本参数
-		)
+		micro.Name("micro.user.service"),
+		micro.Version("latest"), //新增接口版本参数
+	)
 	srv.Init()
 
 	//注册处理器
 	pb.RegisterUserServiceHandler(srv.Server(), &handler.UserService{repo})
 
 	//启动用户服务
-	if err := srv.Run(); err != nil{
+	if err := srv.Run(); err != nil {
 		fmt.Println(err)
 	}
 
-
 }
-
