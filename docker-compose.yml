@@ -30,5 +30,10 @@ services:
       MYSQL_DATABASE: "microshop_user"
       MYSQL_ROOT_PASSWORD: "root"
 
+  microshop-user-cli:
+    build: ./user-cli
+    environment:
+      MICRO_REGISTRY: "mdns"
+
 volumes:
   db_data: {}

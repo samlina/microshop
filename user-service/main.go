@@ -7,6 +7,7 @@ import (
 	"github.com/samlina/microshop/user-service/handler"
 	pb "github.com/samlina/microshop/user-service/proto/user"
 	repository "github.com/samlina/microshop/user-service/repo"
+	"github.com/samlina/microshop/user-service/service"
 	"log"
 )
 
@@ -26,16 +27,18 @@ func main() {
 
 	//初始化 Repo实例用于后续数据库操作
 	repo := &repository.UserRepository{db}
+	//初始化 token service
+	token := &service.TokenService{repo}
 
 	//以下是micro创建微服务流程
 	srv := micro.NewService(
-		micro.Name("micro.user.service"),
+		micro.Name("microshop.user.service"),
 		micro.Version("latest"), //新增接口版本参数
 	)
 	srv.Init()
 
 	//注册处理器
-	pb.RegisterUserServiceHandler(srv.Server(), &handler.UserService{repo})
+	pb.RegisterUserServiceHandler(srv.Server(), &handler.UserService{repo, token})
 
 	//启动用户服务
 	if err := srv.Run(); err != nil {
