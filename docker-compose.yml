@@ -30,6 +30,16 @@ services:
       MYSQL_DATABASE: "microshop_user"
       MYSQL_ROOT_PASSWORD: "root"
 
+  microshop-micro-api:
+    image: microhq/miro:latest
+    environment:
+      MICRO_REGISTRY: "mdns"
+    links:
+      - microshop-user-service
+    ports:
+      - 8080:8080
+    command: api --handler=rpc --namespace=microshop.service
+
   microshop-user-cli:
     build: ./user-cli
     environment:
